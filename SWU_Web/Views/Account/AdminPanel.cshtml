@@ -1,0 +1,203 @@
+﻿
+
+<div class="d-flex">
+    <input class="btn btn-primary mb-2" type="button" value="Добавить пользователя" id="btnAdd" />
+</div>
+<table id="table">
+    <thead>
+        <tr>
+            <th>ФИО</th>
+            <th>Должность</th>
+            <th>Роль</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<div id="dialog-add-user" title="Добавление нового пользователя">
+    <form method="post">
+        <div class="form-group">
+            <label>ФИО</label>
+            <input id="add-fullname" type="text" class="form-control" name="fullName" placeholder="Введите ФИО" required>
+        </div>
+        <div class="form-group">
+            <label>Должность</label>
+            <input id="add-pos" type="text" class="form-control" name="position" placeholder="Введите должность" required>
+        </div>
+        <div class="form-group">
+            <label>Роль</label>
+            <select class="form-control" id="add-role" name="role" required>
+                <option selected value="Quest">Гость</option>
+                <option value="Employee">Сотрудник</option>
+                <option value="SuperAdmin">Суперадмин</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Логин</label>
+            <input id="add-login" type="text" class="form-control" name="login" placeholder="Введите логин" required>
+        </div>
+        <div class="form-group">
+            <label>Пароль</label>
+            <input id="add-password" type="password" class="form-control" name="password" placeholder="Введите пароль" required>
+        </div>
+        <button type="submit" asp-controller="Account" asp-action="AddUser">Добавить пользователя</button>
+        <button type="button" onclick="closeDialoge(1)"> Отмена</button>
+    </form>
+</div>
+
+<div id="dialog-edit-user" title="редактирование пользователя">
+    <form method="post">
+        <input id="edit-id" type="hidden" name="id" required>
+        <div class="form-group">
+            <label>ФИО</label>
+            <input id="edit-fullname" type="text" class="form-control" name="fullName" placeholder="Введите ФИО" required>
+        </div>
+        <div class="form-group">
+            <label>Должность</label>
+            <input id="edit-pos" type="text" class="form-control" name="position" placeholder="Введите должность" required>
+        </div>
+        <div class="form-group">
+            <label>Роль</label>
+            <select class="form-control" id="edit-role" name="role" required>
+                <option selected value="Quest">Гость</option>
+                <option value="Employee">Сотрудник</option>
+                <option value="SuperAdmin">Суперадмин</option>
+            </select>
+        </div>
+        <div class="form-group d-flex">
+            <input id="edit-ch" type="checkbox" value="true" name="editLogin" class="form-check" onchange="changeEditPass(this)" placeholder="Изменить пароль">
+            <span>Изменить данные входа</span>
+        </div>
+        <div class="form-group">
+            <label>Логин</label>
+            <input id="edit-login" type="text" class="form-control" name="login" placeholder="Введите логин" required>
+        </div>
+
+        <div class="form-group">
+            <label>Пароль</label>
+            <input id="edit-password" type="password" class="form-control" name="password" placeholder="Введите новый пароль">
+        </div>
+        <button type="submit" asp-controller="Account" asp-action="EditUser">Изменить</button>
+        <button type="button" onclick="closeDialoge(2)">Отмена</button>
+    </form>
+</div>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<link href="~/lib/datatables.net/css/jquery.dataTables.css" rel="stylesheet" />
+<script src="~/lib/datatables.net/jquery.dataTables.min.js"></script>
+<script src="~/lib/jqueryui/jquery-ui.min.js"></script>
+<link href="~/lib/jqueryui/themes/smoothness/jquery-ui.min.css" rel="stylesheet" />
+<script>
+    var users = [];
+    var dialogeAddUser;
+    var dialogeEditUser;
+    function closeDialoge(id) {
+        switch (id) {
+            case 1: {
+                closeAddDialoge();
+                break;
+            }
+            case 2: {
+                closeEditDialoge();
+                break;
+            }
+        }
+    }
+    function closeAddDialoge() {
+        $('#add-fullname').val('');
+        $('#add-pos').val('');
+        $('#add-role').val('Quest');
+        $('#add-login').val('');
+        $('#add-password').val('');
+        dialogeAddUser.dialog('close');
+    }
+    function closeEditDialoge() {
+        $('#edit-id').val('');
+        $('#edit-fullname').val('');
+        $('#edit-pos').val('');
+        $('#edit-role').val('Quest');
+        $('#edit-login').val('');
+        $('#edit-login').prop("disabled", true);
+        $('#edit-password').val('');
+        $('#edit-password').prop("disabled", true);
+        $('#edit-ch').prop('checked', false);
+        dialogeEditUser.dialog('close');
+    }
+    function openEdit(id) {
+        let u = users.filter((u) => u.id == id)[0]
+        $('#edit-id').val(u.id);
+        $('#edit-fullname').val(u.fullName);
+        $('#edit-pos').val(u.position);
+        $('#edit-role').val(u.role);
+        $('#edit-login').val(u.login);
+        $('#edit-password').val('');
+        $('#edit-password').prop("disabled", true);
+        $('#edit-login').prop("disabled", true);
+        $('#edit-ch').prop('checked', false);
+
+        dialogeEditUser.dialog('open');
+    }
+
+    function changeEditPass(e) {
+        $('#edit-password').prop("disabled", !e.checked);
+        $('#edit-login').prop("disabled", !e.checked);
+        $('#edit-password').prop("required", e.checked);
+        $('#edit-login').prop("required", e.checked);
+    }
+    $(document).ready(function ($) {
+        $.ajax({
+            method: 'Get',
+            url: '@Url.Action("GetAllUsers")',
+            success: function (data) {
+                console.log(data);
+                users = data;
+                let t = $('#table');
+                t.DataTable({
+                    data: data,
+                    columns: [
+                        { data: 'fullName' },
+                        { data: 'position' },
+                        { data: 'role' },
+                        { data: 'id' }
+                    ],
+                    columnDefs: [
+                        {
+                            targets: 3,
+                            orderable: false,
+                            render: function (data, type, row, meta) {
+                                return `<input type="button" class="btn btn-info" onclick="openEdit('${data}')" value="Изменить"/>
+                                <a class="btn btn-danger" href="@Url.Action("DeleteUser","Account")?id=${data}">Удалить</a>`;
+                            }
+                        }],
+                    order: [[0, 'desc']]
+                });
+            }
+        });
+        dialogeAddUser = $("#dialog-add-user");
+        dialogeAddUser.dialog({
+            autoOpen: false,
+            resizable: false,
+            width: 500,
+            modal: true,
+        });
+        dialogeAddUser.hide();
+
+        dialogeEditUser = $("#dialog-edit-user");
+        dialogeEditUser.dialog({
+            autoOpen: false,
+            resizable: false,
+            width: 500,
+            modal: true,
+        });
+        dialogeEditUser.hide();
+
+
+        $("#btnAdd").click(function () {
+            dialogeAddUser.dialog('open');
+        });
+    });
+
+</script>

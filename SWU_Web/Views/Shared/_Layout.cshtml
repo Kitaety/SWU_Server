@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using SWU_Web.Enums;
+@inject UserManager<User> userManager
+@{ 
+    User user = await userManager.GetUserAsync(User);
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -6,6 +11,11 @@
     <title>@ViewData["Title"] - SWU_Web</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link href="~/lib/datatables.net/css/jquery.dataTables.css" rel="stylesheet" />
+    <script src="~/lib/datatables.net/jquery.dataTables.min.js"></script>
+    <link href="~/lib/jqueryui/jquery-ui.min.css" rel="stylesheet" />
+    <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
 </head>
 <body>
     <header>
@@ -18,11 +28,18 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                        @if (user != null)
+                        {
+                            @if (await userManager.IsInRoleAsync(user, Roles.SuperAdmin.ToString()))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="AdminPanel">Админ панель</a>
+                                </li>
+                            }
+                        }
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
