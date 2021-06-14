@@ -1,0 +1,79 @@
+﻿@model MainPageModel
+<style>
+    .w-60 {
+        width: 60% !important;
+    }
+
+    .w-35 {
+        width: 35% !important;
+    }
+</style>
+<div id="card_container">
+</div>
+
+<script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    var cardContainer = $('#card_container');
+    function createSystemCard(system) {
+        let detectors = system.detectors.reduce(function (accumulator, d) {
+            return accumulator + `<div class="d-flex">
+                        <div class=" w-50 d-inline-block text-md-right">
+                            <label>${d.name}:</label>
+                        </div>
+                        <div class="d-inline-block text-md-left pl-2">
+                            <label id="detector_value_${d.id}">0</label>
+                        </div>
+                    </div>
+        `},'');
+        let systemCard = `<div id="system_${system.id}" class="m-3 shadow border-bottom w-25 card">
+                <div class="card-header">
+                    <h4>${system.name}</h4>
+                </div>
+                <div class="card-body p-3">
+                    <div class="d-flex ml-2 mr-auto">
+                        <label class="d-inline-block w-35 text-md-right pr-3">Location:</label>
+                        <label class="d-inline-block w-60 text-md-left">${system.location}</label>
+                    </div>
+                    <div class="ml-2 mr-auto">
+                        <label class="d-inline-block w-35 text-md-right pr-3">Status:</label>
+                        <label id="system_status_${system.id}"  class="d-inline-block w-60 text-md-left">${system.status == 0 ? "Offline" : "Online"}</label>
+                    </div>
+                    <hr class="mt-1 mb-1 mr-0 ml-0" />
+                    <div>
+                       ${detectors}
+                    </div>
+                </div>
+            </div>
+        `;
+        $(systemCard).appendTo('#card_container')
+    }
+
+    function updateSystemValue(system) {
+        system.detectors.forEach(d => {
+            let detectorValueLabel = $(`#detector_value_${d.id}`)
+            detectorValueLabel.text(d.value)
+        })
+    }
+    function updateSystemStatus(system) {
+        let statusLabel = $(`#system_status_${system.id}`)
+        statusLabel.text(system.status == 0 ? "Offline" : "Online")
+    }
+    const hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl("/hub")
+        .build();
+
+    hubConnection.on("LoadSystems", function (systems) {
+        console.log("load systems")
+        systems.forEach(system => createSystemCard(system))
+    });
+    hubConnection.on("UpdateSystemValue", function (system) {
+        console.log("update system values")
+        updateSystemValue(system)
+    });
+    hubConnection.on("UpdateSystemStatus", function (system) {
+        console.log("update system status")
+        updateSystemStatus(system)
+    });
+    hubConnection.start();
+</script>

@@ -12,5 +12,10 @@ namespace SWU_Web.Data
             : base(options)
         {
         }
+
+        public DbSet<SwuSystem> Systems { get; set; }
+        public DbSet<TypeDetector> TypeDetectors { get; set; }
+        public DbSet<Detector> Detectors { get; set; }
+        public DbSet<LogDetector> LogDetectors { get; set; }
     }
 }

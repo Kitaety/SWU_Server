@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SWU_Web.Data;
+using SWU_Web.SystemServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,6 @@ namespace SWU_Web
         public async static Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -27,8 +27,12 @@ namespace SWU_Web
                     var context = services.GetRequiredService<ApplicationDbContext>();
                     var userManager = services.GetRequiredService<UserManager<User>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    ContextSeed.SeedTypesDetectorsAsync(context);
                     await ContextSeed.SeedRolesAsync(userManager, roleManager);
                     await ContextSeed.SeedSuperAdminAsync(userManager, roleManager);
+                    var loggerSystem = loggerFactory.CreateLogger<SystemThread>();
+                    SystemThread.Instance.LoadSettings(loggerSystem);
+                    SystemThread.Instance.StartListener();
 
                 }
                 catch (Exception ex)

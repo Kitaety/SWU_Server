@@ -1,0 +1,65 @@
+﻿<div class="d-flex">
+    <input class="btn btn-primary mb-2" type="button" value="Add system" id="btnAdd" />
+</div>
+<table id="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Detectors</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<link href="~/lib/datatables.net/css/jquery.dataTables.css" rel="stylesheet" />
+<script src="~/lib/datatables.net/jquery.dataTables.min.js"></script>
+<script src="~/lib/jqueryui/jquery-ui.min.js"></script>
+<link href="~/lib/jqueryui/themes/smoothness/jquery-ui.min.css" rel="stylesheet" />
+<script>
+    $(document).ready(function ($) {
+      $.ajax({
+            method: 'Get',
+            url: '@Url.Action("GetSystems")',
+            success: function (data) {
+                console.log(data);
+                users = data;
+                let t = $('#table');
+                t.DataTable({
+                    data: data,
+                    columns: [
+                        { data: 'id' },
+                        { data: 'name' },
+                        { data: 'location' },
+                        { data: 'detectors' },
+                        { data: 'id' }
+                    ],
+                    columnDefs: [
+                        {
+                            targets: 3,
+                            orderable: false,
+                            render: function (data, type, row, meta) {
+                                let names = data.map(function (value) {
+                                    return value.name
+                                })
+                                return names
+                            }
+                        },
+                        {
+                            targets: 4,
+                            orderable: false,
+                            render: function (data, type, row, meta) {
+                                return `<input type="button" class="btn btn-info" onclick="openEdit('${data}')" value="Изменить"/>
+                                <a class="btn btn-danger" href="@Url.Action("DeleteUser","Account")?id=${data}">Удалить</a>`;
+                            }
+                        }],
+                    order: [[0, 'desc']]
+                });
+            }
+        });
+    })
+</script>

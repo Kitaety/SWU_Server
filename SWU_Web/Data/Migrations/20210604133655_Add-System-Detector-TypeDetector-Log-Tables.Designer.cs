@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWU_Web.Data;
 
 namespace SWU_Web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210604133655_Add-System-Detector-TypeDetector-Log-Tables")]
+    partial class AddSystemDetectorTypeDetectorLogTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -201,7 +203,7 @@ namespace SWU_Web.Data.Migrations
                     b.ToTable("LogDetectors");
                 });
 
-            modelBuilder.Entity("SWU_Web.Data.SwuSystem", b =>
+            modelBuilder.Entity("SWU_Web.Data.System", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -361,7 +363,7 @@ namespace SWU_Web.Data.Migrations
 
             modelBuilder.Entity("SWU_Web.Data.Detector", b =>
                 {
-                    b.HasOne("SWU_Web.Data.SwuSystem", "System")
+                    b.HasOne("SWU_Web.Data.System", "System")
                         .WithMany("Detectors")
                         .HasForeignKey("SystemId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -389,7 +391,7 @@ namespace SWU_Web.Data.Migrations
                     b.Navigation("Detector");
                 });
 
-            modelBuilder.Entity("SWU_Web.Data.SwuSystem", b =>
+            modelBuilder.Entity("SWU_Web.Data.System", b =>
                 {
                     b.Navigation("Detectors");
                 });

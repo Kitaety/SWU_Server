@@ -1,24 +1,37 @@
 ﻿@model SWU_Web.Models.LoginViewModel
 
-<h2>Вход в приложение</h2>
-<form method="post" asp-controller="Account" asp-action="Login"
-      asp-route-returnUrl="@Model.ReturnUrl">
-    <div asp-validation-summary="ModelOnly"></div>
-    <div>
-        <label asp-for="Login"></label><br />
-        <input asp-for="Login" />
-        <span asp-validation-for="Login"></span>
+<style>
+    .center{
+        position:absolute;
+        top:50%;
+        left:50%;
+        transform:translate(-50%,-50%);
+    }
+</style>
+    <div class="m-auto w-25 card shadow border-bottom center">
+        <div class="p-3">
+            <h2 class="d-inline-block text-md-center w-100">Sing in</h2>
+        </div>
+        <hr class="mt-1 mb-1" />
+        <form method="post"
+              class="mw-100 pt-2 pl-4 pr-4 pb-4"
+              asp-controller="Account"
+              asp-action="Login"
+              asp-route-returnUrl="@Model.ReturnUrl">
+            <div asp-validation-summary="ModelOnly"></div>
+            <div class="d-flex flex-column mt-2 mb-2">
+                <label asp-for="Login"></label>
+                <input class="form-control" asp-for="Login" />
+                <span asp-validation-for="Login"></span>
+            </div>
+            <div class="d-flex flex-column mt-2 mb-2">
+                <label asp-for="Password"></label>
+                <input class="form-control" asp-for="Password" />
+                <span asp-validation-for="Password"></span>
+            </div>
+            <div class="mt-5">
+                <input class="d-block mr-auto ml-auto btn btn-primary w-50" type="submit" value="Login" />
+            </div>
+        </form>
     </div>
-    <div>
-        <label asp-for="Password"></label><br />
-        <input asp-for="Password" />
-        <span asp-validation-for="Password"></span>
-    </div>
-    <div>
-        <label asp-for="RememberMe"></label><br />
-        <input asp-for="RememberMe" />
-    </div>
-    <div>
-        <input type="submit" value="Войти" />
-    </div>
-</form>
+

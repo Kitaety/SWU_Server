@@ -1,86 +1,86 @@
 ﻿
 
 <div class="d-flex">
-    <input class="btn btn-primary mb-2" type="button" value="Добавить пользователя" id="btnAdd" />
+    <input class="btn btn-primary mb-2" type="button" value="Add user" id="btnAdd" />
 </div>
 <table id="table">
     <thead>
         <tr>
-            <th>ФИО</th>
-            <th>Должность</th>
-            <th>Роль</th>
-            <th>Действия</th>
+            <th>Fullname</th>
+            <th>Position</th>
+            <th>Role</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
     </tbody>
 </table>
 
-<div id="dialog-add-user" title="Добавление нового пользователя">
+<div id="dialog-add-user" title="Add new user">
     <form method="post">
         <div class="form-group">
-            <label>ФИО</label>
-            <input id="add-fullname" type="text" class="form-control" name="fullName" placeholder="Введите ФИО" required>
+            <label>Full name</label>
+            <input id="add-fullname" type="text" class="form-control" name="fullName" placeholder="Enter full name" required>
         </div>
         <div class="form-group">
-            <label>Должность</label>
-            <input id="add-pos" type="text" class="form-control" name="position" placeholder="Введите должность" required>
+            <label>Position</label>
+            <input id="add-pos" type="text" class="form-control" name="position" placeholder="Enter position" required>
         </div>
         <div class="form-group">
-            <label>Роль</label>
+            <label>Role</label>
             <select class="form-control" id="add-role" name="role" required>
-                <option selected value="Quest">Гость</option>
-                <option value="Employee">Сотрудник</option>
-                <option value="SuperAdmin">Суперадмин</option>
+                <option selected value="Quest">Quest</option>
+                <option value="Employee">Employee</option>
+                <option value="SuperAdmin">SuperAdmin</option>
             </select>
         </div>
         <div class="form-group">
-            <label>Логин</label>
-            <input id="add-login" type="text" class="form-control" name="login" placeholder="Введите логин" required>
+            <label>Login</label>
+            <input id="add-login" type="text" class="form-control" name="login" placeholder="Enter login" required>
         </div>
         <div class="form-group">
-            <label>Пароль</label>
-            <input id="add-password" type="password" class="form-control" name="password" placeholder="Введите пароль" required>
+            <label>Password</label>
+            <input id="add-password" type="password" class="form-control" name="password" placeholder="Enter password" required>
         </div>
-        <button type="submit" asp-controller="Account" asp-action="AddUser">Добавить пользователя</button>
-        <button type="button" onclick="closeDialoge(1)"> Отмена</button>
+        <button type="submit" asp-controller="Account" asp-action="AddUser">Add user</button>
+        <button type="button" onclick="closeDialoge(1)">Cancel</button>
     </form>
 </div>
 
-<div id="dialog-edit-user" title="редактирование пользователя">
+<div id="dialog-edit-user" title="Edit user">
     <form method="post">
         <input id="edit-id" type="hidden" name="id" required>
         <div class="form-group">
-            <label>ФИО</label>
-            <input id="edit-fullname" type="text" class="form-control" name="fullName" placeholder="Введите ФИО" required>
+            <label>Full name</label>
+            <input id="edit-fullname" type="text" class="form-control" name="fullName" placeholder="Enter full name" required>
         </div>
         <div class="form-group">
-            <label>Должность</label>
-            <input id="edit-pos" type="text" class="form-control" name="position" placeholder="Введите должность" required>
+            <label>Position</label>
+            <input id="edit-pos" type="text" class="form-control" name="position" placeholder="Enter position" required>
         </div>
         <div class="form-group">
-            <label>Роль</label>
+            <label>Role</label>
             <select class="form-control" id="edit-role" name="role" required>
-                <option selected value="Quest">Гость</option>
-                <option value="Employee">Сотрудник</option>
-                <option value="SuperAdmin">Суперадмин</option>
+                <option selected value="Quest">Quest</option>
+                <option value="Employee">Employee</option>
+                <option value="SuperAdmin">SuperAdmin</option>
             </select>
         </div>
         <div class="form-group d-flex">
-            <input id="edit-ch" type="checkbox" value="true" name="editLogin" class="form-check" onchange="changeEditPass(this)" placeholder="Изменить пароль">
-            <span>Изменить данные входа</span>
+            <input id="edit-ch" type="checkbox" value="true" name="editLogin" class="form-check" onchange="changeEditPass(this)" >
+            <span>Change login data</span>
         </div>
         <div class="form-group">
-            <label>Логин</label>
-            <input id="edit-login" type="text" class="form-control" name="login" placeholder="Введите логин" required>
+            <label>Login</label>
+            <input id="edit-login" type="text" class="form-control" name="login" placeholder="Enter login" required>
         </div>
 
         <div class="form-group">
-            <label>Пароль</label>
-            <input id="edit-password" type="password" class="form-control" name="password" placeholder="Введите новый пароль">
+            <label>Password</label>
+            <input id="edit-password" type="password" class="form-control" name="password" placeholder="Enter new password">
         </div>
-        <button type="submit" asp-controller="Account" asp-action="EditUser">Изменить</button>
-        <button type="button" onclick="closeDialoge(2)">Отмена</button>
+        <button type="submit" asp-controller="Account" asp-action="EditUser">Edit</button>
+        <button type="button" onclick="closeDialoge(2)">Cancel</button>
     </form>
 </div>
 
@@ -168,8 +168,8 @@
                             targets: 3,
                             orderable: false,
                             render: function (data, type, row, meta) {
-                                return `<input type="button" class="btn btn-info" onclick="openEdit('${data}')" value="Изменить"/>
-                                <a class="btn btn-danger" href="@Url.Action("DeleteUser","Account")?id=${data}">Удалить</a>`;
+                                return `<input type="button" class="btn btn-info" onclick="openEdit('${data}')" value="Edit"/>
+                                <a class="btn btn-danger" href="@Url.Action("DeleteUser","Account")?id=${data}">Delete</a>`;
                             }
                         }],
                     order: [[0, 'desc']]

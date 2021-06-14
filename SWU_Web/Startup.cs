@@ -4,11 +4,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SWU_Web.Data;
+using SWU_Web.Hubs;
+using SWU_Web.SystemServer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,11 +31,11 @@ namespace SWU_Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
-
             services.AddIdentity<User,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
@@ -45,11 +48,16 @@ namespace SWU_Web
             {
                 options.LoginPath = $"/Account/Login";
             });
+
+            var service = services.BuildServiceProvider();
+            new SystemDbContoller(service);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            NotificationHub.Current = app.ApplicationServices.GetService<IHubContext<NotificationHub>>();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -73,8 +81,9 @@ namespace SWU_Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=SystemMonitoring}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<NotificationHub>("/hub");
             });
         }
     }

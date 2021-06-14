@@ -38,7 +38,7 @@ namespace SWU_Web.Controllers
             if (ModelState.IsValid)
             {
                 var result =
-                    await _signInManager.PasswordSignInAsync(model.Login, model.Password, model.RememberMe, false);
+                    await _signInManager.PasswordSignInAsync(model.Login, model.Password,false, false);
                 if (result.Succeeded)
                 {
                     // проверяем, принадлежит ли URL приложению
@@ -48,7 +48,7 @@ namespace SWU_Web.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "SystemMonitoring");
                     }
                 }
                 else
@@ -65,7 +65,7 @@ namespace SWU_Web.Controllers
         {
             // удаляем аутентификационные куки
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "SystemMonitoring");
         }
 
         [HttpGet]
